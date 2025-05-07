@@ -1,20 +1,30 @@
-import { useState, useEffect } from 'react';
-import { searchGithub } from '../api/API';
+import { useState, useEffect } from "react";
+import { searchGithub } from "../api/API";
 
 const CandidateSearch = () => {
   const [candidate, setCandidate] = useState<any>(null);
   const [savedCandidates, setSavedCandidates] = useState<any[]>([]);
 
+  // Load saved candidates from LocalStorage on page load
   useEffect(() => {
+    const storedCandidates = localStorage.getItem("savedCandidates");
+    if (storedCandidates) {
+      setSavedCandidates(JSON.parse(storedCandidates));
+    }
     fetchCandidate();
   }, []);
+
+  // Update LocalStorage whenever savedCandidates changes
+  useEffect(() => {
+    localStorage.setItem("savedCandidates", JSON.stringify(savedCandidates));
+  }, [savedCandidates]);
 
   const fetchCandidate = async () => {
     const candidates = await searchGithub();
     if (candidates.length > 0) {
-      setCandidate(candidates[0]); // Display first candidate
+      setCandidate(candidates[0]); // Show first candidate
     } else {
-      setCandidate(null); // No candidates available
+      setCandidate(null); // No more candidates
     }
   };
 
@@ -47,6 +57,25 @@ const CandidateSearch = () => {
         </div>
       ) : (
         <p>No more candidates available</p>
+      )}
+
+      <h2>Saved Candidates</h2>
+      {savedCandidates.length > 0 ? (
+        <ul>
+          {savedCandidates.map((saved) => (
+            <li key={saved.login}>
+              <img src={saved.avatar_url} alt={`${saved.login}'s avatar`} />
+              <p>{saved.login}</p>
+              <p>Location: {saved.location || "Unknown"}</p>
+              <p>Company: {saved.company || "Not specified"}</p>
+              <a href={saved.html_url} target="_blank" rel="noopener noreferrer">
+                View Profile
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No candidates have been accepted yet.</p>
       )}
     </div>
   );
