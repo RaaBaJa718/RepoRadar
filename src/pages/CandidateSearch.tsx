@@ -1,79 +1,54 @@
-import { useState, useEffect } from "react";
-import { searchGithub } from "../api/API";
+import { useEffect, useState } from "react";
+import { Candidate } from "../interfaces/Candidate.interface.tsx";
 
-const CandidateSearch = () => {
-  const [candidate, setCandidate] = useState<any>(null);
-  const [savedCandidates, setSavedCandidates] = useState<any[]>([]);
+const SavedCandidates = () => {
+  const [savedCandidates, setSavedCandidates] = useState<Candidate[]>([]);
 
-  // Load saved candidates from LocalStorage on page load
   useEffect(() => {
     const storedCandidates = localStorage.getItem("savedCandidates");
     if (storedCandidates) {
       setSavedCandidates(JSON.parse(storedCandidates));
     }
-    fetchCandidate();
   }, []);
 
-  // Update LocalStorage whenever savedCandidates changes
-  useEffect(() => {
-    localStorage.setItem("savedCandidates", JSON.stringify(savedCandidates));
-  }, [savedCandidates]);
-
-  const fetchCandidate = async () => {
-    const candidates = await searchGithub();
-    if (candidates.length > 0) {
-      setCandidate(candidates[0]); // Show first candidate
-    } else {
-      setCandidate(null); // No more candidates
-    }
-  };
-
-  const handleSaveCandidate = () => {
-    setSavedCandidates([...savedCandidates, candidate]);
-    fetchCandidate();
-  };
-
-  const handleSkipCandidate = () => {
-    fetchCandidate();
+  const removeCandidate = (id: number) => {
+    const updatedCandidates = savedCandidates.filter(candidate => candidate.id !== id);
+    setSavedCandidates(updatedCandidates);
+    localStorage.setItem("savedCandidates", JSON.stringify(updatedCandidates));
   };
 
   return (
-    <div>
-      <h1>Candidate Search</h1>
-
-      {candidate ? (
-        <div>
-          <img src={candidate.avatar_url} alt={`${candidate.login}'s avatar`} />
-          <h2>{candidate.login}</h2>
-          <p>Location: {candidate.location || "Unknown"}</p>
-          <p>Company: {candidate.company || "Not specified"}</p>
-          <a href={candidate.html_url} target="_blank" rel="noopener noreferrer">
-            View Profile
-          </a>
-          <div>
-            <button onClick={handleSaveCandidate}>+</button>
-            <button onClick={handleSkipCandidate}>-</button>
-          </div>
-        </div>
-      ) : (
-        <p>No more candidates available</p>
-      )}
-
+    <div className="saved-candidates-container">
       <h2>Saved Candidates</h2>
       {savedCandidates.length > 0 ? (
-        <ul>
-          {savedCandidates.map((saved) => (
-            <li key={saved.login}>
-              <img src={saved.avatar_url} alt={`${saved.login}'s avatar`} />
-              <p>{saved.login}</p>
-              <p>Location: {saved.location || "Unknown"}</p>
-              <p>Company: {saved.company || "Not specified"}</p>
-              <a href={saved.html_url} target="_blank" rel="noopener noreferrer">
-                View Profile
-              </a>
-            </li>
-          ))}
-        </ul>
+        <table className="candidates-table">
+          <thead>
+            <tr>
+              <th>Avatar</th>
+              <th>Username</th>
+              <th>Location</th>
+              <th>Email</th>
+              <th>Company</th>
+              <th>Bio</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {savedCandidates.map(candidate => (
+              <tr key={candidate.id}>
+                <td><img src={candidate.avatar_url} alt={candidate.login} width="50" /></td>
+                <td><a href={candidate.html_url} target="_blank">{candidate.login}</a></td>
+                <td>{candidate.location || "Unknown"}</td>
+                <td>{candidate.email || "Not available"}</td>
+                <td>{candidate.company || "Not listed"}</td>
+                <td>{candidate.bio || "No bio available"}</td>
+                <td>
+                  <button className="remove-btn" onClick={() => removeCandidate(candidate.id)}>❌ Remove</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ) : (
         <p>No candidates have been accepted yet.</p>
       )}
@@ -81,4 +56,4 @@ const CandidateSearch = () => {
   );
 };
 
-export default CandidateSearch;
+export default SavedCandidates;
