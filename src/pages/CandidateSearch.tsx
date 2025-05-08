@@ -5,10 +5,29 @@ const SavedCandidates = () => {
   const [savedCandidates, setSavedCandidates] = useState<Candidate[]>([]);
 
   useEffect(() => {
+    // Load saved candidates from local storage
     const storedCandidates = localStorage.getItem("savedCandidates");
     if (storedCandidates) {
       setSavedCandidates(JSON.parse(storedCandidates));
     }
+  
+    // Fetch new candidates from GitHub API
+    // Define the fetchCandidate function
+    const fetchCandidate = async () => {
+      try {
+        console.log("Fetching candidates...");
+        const response = await fetch("https://api.github.com/users");
+        const data = await response.json();
+        console.log("API Response:", data);
+    
+        // Update state to store fetched candidates
+        setSavedCandidates(data);
+      } catch (error) {
+        console.error("Error fetching candidates:", error);
+      }
+    };
+    
+        fetchCandidate();
   }, []);
 
   const removeCandidate = (id: number) => {
