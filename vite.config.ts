@@ -5,7 +5,8 @@ export default defineConfig({
   envDir: "./env",
   plugins: [react()],
   server: {
-    port: Number(process.env.PORT) || 3000, // ✅ Bind to Render’s assigned port
-    host: "0.0.0.0", // ✅ Ensure Render can expose it
+    port: Number(process.env.PORT) || 4173, // ✅ Explicitly set Render's port
+    host: "0.0.0.0", // ✅ Allow external access
+    strictPort: true, // ✅ Prevent Vite from changing the port dynamically
   },
 });
