@@ -1,3 +1,38 @@
+## RepoRadar 🚀
+
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+RepoRadar is a candidate search application that integrates with the GitHub API to retrieve and display developer profiles and repository data in the browser. This tool helps users efficiently find coding talent based on relevant GitHub activity.
+
+## Features 🌟
+- Fetches developer profiles from GitHub
+- Displays repository details in an intuitive UI
+- Uses efficient API calls for seamless data retrieval
+- Provides insights into candidates’ coding activity
+
+  ## Installation 🛠
+
+![Screenshot 2025-05-08 154549](https://github.com/user-attachments/assets/0e1de7f5-218b-4af4-9c42-0268c170d990)
+
+
+## Usage 📖
+- Enter a GitHub username to fetch candidate details
+- View their repositories and activity in a clean, user-friendly format
+- Use filters to refine search results
+
+## Technologies Used ⚙️
+- JavaScript
+- Node.js
+- Express
+- GitHub API
+- React (optional, based on UI implementation)
+
+## Contributions 🤝
+Contributions are welcome! Feel free to submit issues and pull requests to improve RepoRadar.
+
+## License 📜
+This project is licensed under the MIT License.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
